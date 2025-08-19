@@ -1,5 +1,7 @@
 package com.example.java_test_project.service;
 
+import com.example.java_test_project.model.LogEntry;
+import com.example.java_test_project.parser.LogParser;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -7,14 +9,30 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 
 public class LogService {
 
-    public List<String> readLogFile(String fileName) throws IOException {
+    private LogParser logParser;
+
+    public LogService(LogParser logParser) {
+        this.logParser = logParser;
+    }
+
+    public List<LogEntry> readLogFile(String fileName) throws IOException {
         ClassPathResource resource = new ClassPathResource("logs/" + fileName);
-        return Files.readAllLines(resource.getFile().toPath());
+        List<String> lines = Files.readAllLines(resource.getFile().toPath());
+
+        List<LogEntry> entries = new ArrayList<>();
+        for (String line : lines) {
+            LogEntry entry = logParser.parseLine(line);
+            if (entry != null) {
+                entries.add(entry);
+            }
+        }
+        return entries;
     }
 }

@@ -5,7 +5,7 @@ public class LogEntry {
     private int httpCode;
     private int duration;
 
-    private LogEntry(String page, int httpCode, int duration) {
+    public LogEntry(String page, int httpCode, int duration) {
         this.page = page;
         this.httpCode = httpCode;
         this.duration = duration;

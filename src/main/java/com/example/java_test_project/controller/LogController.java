@@ -1,5 +1,6 @@
 package com.example.java_test_project.controller;
 
+import com.example.java_test_project.model.LogEntry;
 import com.example.java_test_project.service.LogService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,7 @@ public class LogController {
     }
 
     @GetMapping("/get-log")
-    public List<String> getLog() throws IOException {
+    public List<LogEntry> getLog() throws IOException {
         String filePath = "logs-2023-08.log";
         return logService.readLogFile(filePath);
     }
