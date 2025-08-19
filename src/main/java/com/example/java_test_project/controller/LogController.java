@@ -27,4 +27,10 @@ public class LogController {
         String filePath = "logs-2023-08.log";
         return logService.readLogFile(filePath);
     }
+
+    @GetMapping("/{year}/{month}/codes")
+    public Map<Integer, Long> getHttpCodes(@PathVariable String year, @PathVariable String month) throws IOException {
+        String fileName = String.format("logs-%s-%s.log", year, month);
+        return logService.countHttpCodes(fileName);
+    }
 }
