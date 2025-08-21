@@ -43,4 +43,9 @@ public class LogService {
         List<LogEntry> entries = readLogFile(filename);
         return entries.stream().collect(Collectors.groupingBy(LogEntry::getHttpCode, Collectors.counting()));
     }
+
+    public Map<String, Double> averageRequestDuration(String filename) throws IOException {
+        List<LogEntry> entries = readLogFile(filename);
+        return entries.stream().collect(Collectors.groupingBy(LogEntry::getPage, Collectors.averagingInt(LogEntry::getDuration)));
+    }
 }
