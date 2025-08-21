@@ -2,14 +2,11 @@ package com.example.java_test_project.service;
 
 import com.example.java_test_project.model.LogEntry;
 import com.example.java_test_project.parser.LogParser;
-import org.apache.juli.logging.Log;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,5 +44,10 @@ public class LogService {
     public Map<String, Double> averageRequestDuration(String filename) throws IOException {
         List<LogEntry> entries = readLogFile(filename);
         return entries.stream().collect(Collectors.groupingBy(LogEntry::getPage, Collectors.averagingInt(LogEntry::getDuration)));
+    }
+
+    public Map<String, Long> errorCountPerPage(String filename, int errorCode) throws IOException {
+        List<LogEntry> entries = readLogFile(filename);
+        return entries.stream().filter(entry -> entry.getHttpCode() == errorCode).collect(Collectors.groupingBy(LogEntry::getPage, Collectors.counting()));
     }
 }

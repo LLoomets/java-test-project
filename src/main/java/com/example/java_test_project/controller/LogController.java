@@ -39,4 +39,10 @@ public class LogController {
         String fileName = String.format("logs-%s-%s.log", year, month);
         return logService.averageRequestDuration(fileName);
     }
+
+    @GetMapping("/{year}/{month}/errors/{code}")
+    public Map<String, Long> getErrorsByCode(@PathVariable String year, @PathVariable String month, @PathVariable int code) throws IOException {
+        String fileName = String.format("logs-%s-%s.log", year, month);
+        return logService.errorCountPerPage(fileName, code);
+    }
 }
