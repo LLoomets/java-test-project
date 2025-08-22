@@ -60,6 +60,21 @@ public class LogService {
 
     public Map<String, Long> errorCountPerPage(String filename, int errorCode) throws IOException {
         List<LogEntry> entries = readLogFile(filename);
-        return entries.stream().filter(entry -> entry.getHttpCode() == errorCode).collect(Collectors.groupingBy(LogEntry::getPage, Collectors.counting()));
+
+        Map<String, Long> errorCount = entries.stream().
+                filter(entry -> entry.getHttpCode() == errorCode)
+                .collect(Collectors.groupingBy(
+                        LogEntry::getPage,
+                        Collectors.counting()
+                ));
+
+        return errorCount.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e2,
+                        LinkedHashMap::new
+                ));
     }
 }
