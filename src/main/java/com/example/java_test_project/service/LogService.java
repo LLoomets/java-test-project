@@ -5,8 +5,9 @@ import com.example.java_test_project.parser.LogParser;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,16 +23,12 @@ public class LogService {
 
     public List<LogEntry> readLogFile(String fileName) throws IOException {
         ClassPathResource resource = new ClassPathResource("logs/" + fileName);
-        List<String> lines = Files.readAllLines(resource.getFile().toPath());
 
-        List<LogEntry> entries = new ArrayList<>();
-        for (String line : lines) {
-            LogEntry entry = logParser.parseLine(line);
-            if (entry != null) {
-                entries.add(entry);
-            }
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+            return reader.lines()
+                    .map(logParser::parseLine)
+                    .collect(Collectors.toList());
         }
-        return entries;
     }
 
     public Map<Integer, Long> countHttpCodes(String filename) throws IOException {
