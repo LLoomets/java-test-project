@@ -39,13 +39,16 @@ public class LogService {
         return entries.stream().collect(Collectors.groupingBy(LogEntry::getHttpCode, TreeMap::new, Collectors.counting()));
     }
 
-    public Map<String, Double> averageRequestDuration(String filename) throws IOException {
+    public Map<String, Long> averageRequestDuration(String filename) throws IOException {
         List<LogEntry> entries = readLogFile(filename);
 
-        Map<String, Double> avgDurations = entries.stream()
+        Map<String, Long> avgDurations = entries.stream()
                 .collect(Collectors.groupingBy(
                         LogEntry::getPage,
-                        Collectors.averagingInt(LogEntry::getDuration)
+                        Collectors.collectingAndThen(
+                                Collectors.averagingInt(LogEntry::getDuration),
+                                Math::round
+                        )
                 ));
 
         return avgDurations.entrySet().stream()

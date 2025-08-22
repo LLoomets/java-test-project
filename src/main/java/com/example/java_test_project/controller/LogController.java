@@ -35,7 +35,7 @@ public class LogController {
     }
 
     @GetMapping("/{year}/{month}/avg-duration")
-    public Map<String, Double> getAverageRequestDuration(@PathVariable String year, @PathVariable String month) throws IOException {
+    public Map<String, Long> getAverageRequestDuration(@PathVariable String year, @PathVariable String month) throws IOException {
         String fileName = String.format("logs-%s-%s.log", year, month);
         return logService.averageRequestDuration(fileName);
     }
