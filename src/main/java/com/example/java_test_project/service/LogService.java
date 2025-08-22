@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +36,7 @@ public class LogService {
 
     public Map<Integer, Long> countHttpCodes(String filename) throws IOException {
         List<LogEntry> entries = readLogFile(filename);
-        return entries.stream().collect(Collectors.groupingBy(LogEntry::getHttpCode, Collectors.counting()));
+        return entries.stream().collect(Collectors.groupingBy(LogEntry::getHttpCode, TreeMap::new, Collectors.counting()));
     }
 
     public Map<String, Double> averageRequestDuration(String filename) throws IOException {
