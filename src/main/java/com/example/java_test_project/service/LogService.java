@@ -41,7 +41,21 @@ public class LogService {
 
     public Map<String, Double> averageRequestDuration(String filename) throws IOException {
         List<LogEntry> entries = readLogFile(filename);
-        return entries.stream().collect(Collectors.groupingBy(LogEntry::getPage, Collectors.averagingInt(LogEntry::getDuration)));
+
+        Map<String, Double> avgDurations = entries.stream()
+                .collect(Collectors.groupingBy(
+                        LogEntry::getPage,
+                        Collectors.averagingInt(LogEntry::getDuration)
+                ));
+
+        return avgDurations.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e2,
+                        LinkedHashMap::new
+                ));
     }
 
     public Map<String, Long> errorCountPerPage(String filename, int errorCode) throws IOException {
